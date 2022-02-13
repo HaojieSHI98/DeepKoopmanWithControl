@@ -9,6 +9,7 @@ from collections import OrderedDict
 from copy import copy
 import argparse
 import os
+os.path.append("../utility")
 from torch.utils.tensorboard import SummaryWriter
 from scipy.integrate import odeint
 from Utility import data_collecter

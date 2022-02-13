@@ -6,6 +6,8 @@ import scipy.linalg
 from copy import copy
 from rbf import rbf
 from gym import spaces
+import os
+os.path.append("../franka")
 #data collect
 
 class RBFLiftFunc():
@@ -20,7 +22,7 @@ class RBFLiftFunc():
             lift_val = 1
         elif env_name.startswith("Reacher"):
             lift_val = 8
-        elif env_name.startswith("TwoLinkRobot"):
+        elif env_name.startswith("DoublePendulum"):
             lift_val = 8
         self.lift_low = np.clip(observation_space.low,-lift_val,lift_val)
         self.lift_high = np.clip(observation_space.high,-lift_val,lift_val)
@@ -113,7 +115,7 @@ class DerivativeLiftFunc():
         return psi
 
     
-class TwoLinkRobot():
+class DoublePendulum():
     def __init__(self) -> None:
         self.g = 9.8
         self.l1 = 1.0
@@ -229,8 +231,8 @@ class data_collecter():
             self.umax = self.env.umax
             self.umin = self.env.umin
             self.udim = 1
-        elif self.env_name.startswith("TwoLinkRobot"):
-            self.env = TwoLinkRobot()
+        elif self.env_name.startswith("DoublePendulum"):
+            self.env = DoublePendulum()
             self.Nstates = self.env.Nstates
             self.umax = self.env.umax
             self.umin = self.env.umin

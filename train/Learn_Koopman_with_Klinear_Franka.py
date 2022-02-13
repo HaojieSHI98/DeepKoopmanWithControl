@@ -9,7 +9,8 @@ from collections import OrderedDict
 from copy import copy
 import argparse
 import os
-# from torch.utils.tensorboard import SummaryWriter
+os.path.append("../utility")
+from torch.utils.tensorboard import SummaryWriter
 from scipy.integrate import odeint
 # physics engine
 import pybullet as pb
