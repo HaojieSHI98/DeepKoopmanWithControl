@@ -8,3 +8,6 @@ Deep Koopman Operator with Control for Nonlinear Systems
 ## Control
 <img src="Control.png" width = "1000">
 <img src="FrankaStar.png" width = "1000">
+
+## Environment
+For gym environment, you should modify the replace the gym env file with files in folder ./gym_env/
