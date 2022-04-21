@@ -8,7 +8,8 @@ import random
 from collections import OrderedDict
 from copy import copy
 import argparse
-import os
+import sys
+sys.path.append("../utility/")
 from torch.utils.tensorboard import SummaryWriter
 from scipy.integrate import odeint
 from Utility import data_collecter
@@ -203,7 +204,7 @@ def main():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--env",type=str,default="InvertedDoublePendulum-v2")
+    parser.add_argument("--env",type=str,default="DampingPendulum")
     parser.add_argument("--suffix",type=str,default="")
     parser.add_argument("--augsuffix",type=str,default="")
     parser.add_argument("--all_loss",type=int,default=1)

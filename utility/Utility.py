@@ -6,8 +6,8 @@ import scipy.linalg
 from copy import copy
 from rbf import rbf
 from gym import spaces
-import os
-os.path.append("../franka")
+import sys
+sys.path.append("../franka")
 #data collect
 
 class RBFLiftFunc():
