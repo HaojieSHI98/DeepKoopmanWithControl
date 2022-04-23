@@ -9,6 +9,7 @@ from collections import OrderedDict
 from copy import copy
 import argparse
 import sys
+import os
 sys.path.append("../utility/")
 from torch.utils.tensorboard import SummaryWriter
 from scipy.integrate import odeint
@@ -86,10 +87,10 @@ def Klinear_loss(data,net,mse_loss,u_dim=1,gamma=0.99,Nstate=4,all_loss=0):
 
 def train(env_name,train_steps = 200000,suffix="",augsuffix="",\
             layer_depth=3,obs_mode="theta",\
-            activation_mode="ReLU"):
+            activation_mode="ReLU",Ktrain_samples=50000):
     # Ktrain_samples = 1000
     # Ktest_samples = 1000
-    Ktrain_samples = 50000
+    Ktrain_samples = Ktrain_samples
     Ktest_samples = 20000
     Ksteps = 15
     Kbatch_size = 256
@@ -126,7 +127,7 @@ def train(env_name,train_steps = 200000,suffix="",augsuffix="",\
     eval_step = 500
     best_loss = 1000.0
     best_state_dict = {}
-    logdir = "../Data/"+suffix+"/KNonlinear_"+env_name+augsuffix+"layer{}_AT{}_mode{}".format(layer_depth,activation_mode,obs_mode)
+    logdir = "../Data/"+suffix+"/KNonlinear_"+env_name+augsuffix+"layer{}_AT{}_mode{}_samples{}".format(layer_depth,activation_mode,obs_mode,Ktrain_samples)
     if not os.path.exists( "../Data/"+suffix):
         os.makedirs( "../Data/"+suffix)
     if not os.path.exists(logdir):
@@ -164,12 +165,14 @@ def train(env_name,train_steps = 200000,suffix="",augsuffix="",\
 def main():
     train(args.env,suffix=args.suffix,\
             layer_depth=args.layer_depth,obs_mode=args.obs_mode,\
-            activation_mode=args.activation_mode,augsuffix=args.augsuffix)
+            activation_mode=args.activation_mode,augsuffix=args.augsuffix,
+            Ktrain_samples=args.K_train_samples)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--env",type=str,default="DampingPendulum")
-    parser.add_argument("--suffix",type=str,default="")
+    parser.add_argument("--suffix",type=str,default="4_23")
+    parser.add_argument("--K_train_samples",type=int,default=50000)
     parser.add_argument("--augsuffix",type=str,default="")
     parser.add_argument("--obs_mode",type=str,default="theta")
     parser.add_argument("--activation_mode",type=str,default="ReLU")
