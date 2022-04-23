@@ -104,10 +104,10 @@ def Eig_loss(net):
     return loss
 
 def train(env_name,train_steps = 200000,suffix="",all_loss=0,\
-            encode_dim = 12,layer_depth=3,e_loss=1,gamma=0.5):
+            encode_dim = 12,layer_depth=3,e_loss=1,gamma=0.5,Ktrain_samples=50000):
     # Ktrain_samples = 1000
     # Ktest_samples = 1000
-    Ktrain_samples = 50000
+    Ktrain_samples = Ktrain_samples
     Ktest_samples = 20000
     Ksteps = 15
     Kbatch_size = 256
@@ -143,7 +143,7 @@ def train(env_name,train_steps = 200000,suffix="",all_loss=0,\
     eval_step = 1000
     best_loss = 1000.0
     best_state_dict = {}
-    logdir = "../Data/"+suffix+"/KoopmanU_"+env_name+"layer{}_edim{}_eloss{}_gamma{}_aloss{}".format(layer_depth,encode_dim,e_loss,gamma,all_loss)
+    logdir = "../Data/"+suffix+"/KoopmanU_"+env_name+"layer{}_edim{}_eloss{}_gamma{}_aloss{}_samples{}".format(layer_depth,encode_dim,e_loss,gamma,all_loss,Ktrain_samples)
     if not os.path.exists( "../Data/"+suffix):
         os.makedirs( "../Data/"+suffix)
     if not os.path.exists(logdir):
@@ -197,14 +197,14 @@ def main():
     train(args.env,suffix=args.suffix,all_loss=args.all_loss,\
         encode_dim=args.encode_dim,layer_depth=args.layer_depth,\
             e_loss=args.e_loss,gamma=args.gamma,\
-                )
+                Ktrain_samples=args.K_train_samples)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--env",type=str,default="DampingPendulum")
-    parser.add_argument("--suffix",type=str,default="")
-    parser.add_argument("--augsuffix",type=str,default="")
+    parser.add_argument("--suffix",type=str,default="4_23")
     parser.add_argument("--all_loss",type=int,default=1)
+    parser.add_argument("--K_train_samples",type=int,default=50000)
     parser.add_argument("--e_loss",type=int,default=0)
     parser.add_argument("--gamma",type=float,default=0.8)
     parser.add_argument("--encode_dim",type=int,default=20)

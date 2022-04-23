@@ -225,6 +225,8 @@ def FrankaObs(o):
 class data_collecter():
     def __init__(self,env_name) -> None:
         self.env_name = env_name
+        np.random.seed(2022)
+        random.seed(2022)
         if self.env_name.startswith("DampingPendulum"):
             self.env = SinglePendulum()
             self.Nstates = self.env.Nstates
@@ -253,6 +255,7 @@ class data_collecter():
             self.reset_joint_state = np.array(self.env.reset_joint_state)
         else:
             self.env = gym.make(env_name)
+            self.env.seed(2022)
             self.udim = self.env.action_space.shape[0]
             self.Nstates = self.env.observation_space.shape[0]
             self.umin = self.env.action_space.low
