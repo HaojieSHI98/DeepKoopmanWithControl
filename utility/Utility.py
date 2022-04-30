@@ -233,6 +233,13 @@ class data_collecter():
             self.umax = self.env.umax
             self.umin = self.env.umin
             self.udim = 1
+        elif self.env_name.startswith("Snake"):
+            self.Nstates = 12
+            self.udim = 5
+            data = np.load("/mnt/d/github/DeepKoopmanWithControl/Data/SnakeData.npy")
+            mean = np.mean(data.reshape(-1,18),axis=0)
+            std = np.std(data.reshape(-1,18),axis=0)
+            self.data = (data-mean)/std
         elif self.env_name.startswith("DoublePendulum"):
             self.env = DoublePendulum()
             self.Nstates = self.env.Nstates
@@ -260,9 +267,10 @@ class data_collecter():
             self.Nstates = self.env.observation_space.shape[0]
             self.umin = self.env.action_space.low
             self.umax = self.env.action_space.high
-        self.observation_space = self.env.observation_space
-        self.env.reset()
-        self.dt = self.env.dt
+        if not self.env_name.endswith("Snake"):
+            self.observation_space = self.env.observation_space
+            self.env.reset()
+            self.dt = self.env.dt
 
     def random_state(self):
         if self.env_name.startswith("DampingPendulum"):
@@ -293,7 +301,7 @@ class data_collecter():
             s0 = np.array([x0,th0,th1,dx0,dth0,dth1]) 
         return np.array(s0)
 
-    def collect_koopman_data(self,traj_num,steps):
+    def collect_koopman_data(self,traj_num,steps,mode="train"):
         train_data = np.empty((steps+1,traj_num,self.Nstates+self.udim))
         if self.env_name.startswith("Franka"):
             for traj_i in range(traj_num):
@@ -309,6 +317,28 @@ class data_collecter():
                     s0 = FrankaObs(s0)
                     u10 = (np.random.rand(7)-0.5)*2*self.uval
                     train_data[i,traj_i,:]=np.concatenate([u10.reshape(-1),s0.reshape(-1)],axis=0).reshape(-1)            
+        elif self.env_name.startswith("Snake"):
+            if mode.startswith("train"):
+                real_data = self.data[:500,:,:]
+            elif mode.startswith("eval"):
+                real_data = self.data[500:700,:,:]
+            else:
+                real_data = self.data[700:,:,:]
+            traj,traj_len,dim = real_data.shape
+            train_data = []
+            for i in range(traj):
+                traj_data = real_data[i,:,:]
+                end_index = np.where(traj_data[:,-1]==1)[0]
+                if end_index.shape[0]>0:
+                    end_index = end_index[0]
+                else:
+                    end_index = traj_len-1
+                traj_num = (end_index+1)//(steps+1)
+                train_data_now = np.empty((steps+1,traj_num,17))
+                for j in range(traj_num):
+                    train_data_now[:,j,:] = traj_data[j*(steps+1):(j+1)*(steps+1),:17]
+                train_data.append(train_data_now)
+            train_data = np.concatenate(train_data,axis=1)            
         else:
             for traj_i in range(traj_num):
                 s0 = self.env.reset()

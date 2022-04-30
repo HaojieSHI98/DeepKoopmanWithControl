@@ -114,14 +114,16 @@ def train(env_name,train_steps = 200000,suffix="",all_loss=0,\
     Ktrain_samples = Ktrain_samples
     Ktest_samples = 20000
     Ksteps = 15
-    Kbatch_size = 256
+    Kbatch_size = 100
     #data prepare
     data_collect = data_collecter(env_name)
     u_dim = data_collect.udim
-    Ktest_data = data_collect.collect_koopman_data(Ktest_samples,Ksteps)
-    print("test data ok!")
-    Ktrain_data = data_collect.collect_koopman_data(Ktrain_samples,Ksteps)
-    print("train data ok!")
+    Ktest_data = data_collect.collect_koopman_data(Ktest_samples,Ksteps,mode="eval")
+    Ktest_samples = Ktest_data.shape[1]
+    print("test data ok!,shape:",Ktest_data.shape)
+    Ktrain_data = data_collect.collect_koopman_data(Ktrain_samples,Ksteps,mode="train")
+    print("train data ok!,shape:",Ktrain_data.shape)
+    Ktrain_samples = Ktrain_data.shape[1]
     in_dim = Ktest_data.shape[-1]-u_dim
     Nstate = in_dim
     # layer_depth = 4
@@ -206,7 +208,7 @@ def main():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--env",type=str,default="DampingPendulum")
-    parser.add_argument("--suffix",type=str,default="4_23")
+    parser.add_argument("--suffix",type=str,default="4_28")
     parser.add_argument("--K_train_samples",type=int,default=50000)
     parser.add_argument("--augsuffix",type=str,default="")
     parser.add_argument("--all_loss",type=int,default=1)
