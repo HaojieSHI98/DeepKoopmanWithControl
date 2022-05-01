@@ -183,7 +183,7 @@ def main():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--env",type=str,default="DampingPendulum")
-    parser.add_argument("--suffix",type=str,default="")
+    parser.add_argument("--suffix",type=str,default="4_30")
     parser.add_argument("--K_train_samples",type=int,default=50000)
     parser.add_argument("--augsuffix",type=str,default="")
     parser.add_argument("--obs_mode",type=str,default="theta")
