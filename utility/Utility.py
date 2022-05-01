@@ -240,7 +240,7 @@ class data_collecter():
             mean = np.mean(data.reshape(-1,18),axis=0)
             std = np.std(data.reshape(-1,18),axis=0)
             self.data = (data-mean)/std
-        elif self.env_name.startswith("DoublePendulum"):
+        elif self.env_name.startswith("DoublePendulum") or self.env_name.startswith("TwoLinkRobot"):
             self.env = DoublePendulum()
             self.Nstates = self.env.Nstates
             self.umax = self.env.umax
