@@ -80,7 +80,7 @@ def Klinear_loss(data,net,mse_loss,u_dim=1,gamma=0.99,Nstate=4,all_loss=0,detach
     beta = 1.0
     beta_sum = 0.0
     loss = torch.zeros(1,dtype=torch.float64).to(device)
-    # Augloss = torch.zeros(1,dtype=torch.float64).to(device)
+    Augloss = torch.zeros(1,dtype=torch.float64).to(device)
     for i in range(steps-1):
         bilinear = net.bicode(X_current[:,:Nstate].detach(),data[i,:,:u_dim]) #detach's problem 
         X_current = net.forward(X_current,bilinear)
@@ -90,11 +90,11 @@ def Klinear_loss(data,net,mse_loss,u_dim=1,gamma=0.99,Nstate=4,all_loss=0,detach
         else:
             Y = net.encode(data[i+1,:,u_dim:])
             loss += beta*mse_loss(X_current,Y)
-        # X_current_encoded = net.encode(X_current[:,:Nstate])
-        # Augloss += mse_loss(X_current_encoded,X_current)
+        X_current_encoded = net.encode(X_current[:,:Nstate])
+        Augloss += mse_loss(X_current_encoded,X_current)
         beta *= gamma
-    # Augloss = Augloss/beta_sum
-    return loss
+    Augloss = Augloss/beta_sum
+    return loss+0.5*Augloss
 
 
 def Eig_loss(net):
@@ -207,7 +207,7 @@ def main():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--env",type=str,default="DampingPendulum")
-    parser.add_argument("--suffix",type=str,default="4_28")
+    parser.add_argument("--suffix",type=str,default="5_2")
     parser.add_argument("--all_loss",type=int,default=1)
     parser.add_argument("--e_loss",type=int,default=0)
     parser.add_argument("--K_train_samples",type=int,default=50000)
