@@ -1,7 +1,6 @@
 import pybullet as pb
 import pybullet_data
 import numpy as np
-from gym import spaces
 
 class FrankaEnv(object):
 
@@ -15,7 +14,7 @@ class FrankaEnv(object):
         pb.setTimeStep(ts)
         pb.setAdditionalSearchPath(pybullet_data.getDataPath())
         planeID = pb.loadURDF('plane.urdf')
-        self.robot = pb.loadURDF('../franka/franka_description/robots/franka_panda.urdf', [0.,0.,0.], useFixedBase=1)
+        self.robot = pb.loadURDF('./franka_description/robots/franka_panda.urdf', [0.,0.,0.], useFixedBase=1)
         pb.setGravity(0,0,-9.81)
         self.reset_joint_state = [0., -0.78, 0., -2.35, 0., 1.57, 0.78]
         self.ee_id = 7
@@ -26,10 +25,6 @@ class FrankaEnv(object):
         self.Nstates = 17
         self.udim = 7
         self.dt = self.frame_skip*ts
-        low = np.array([-1]*3+[-2.9,-1.8,-2.9,-3.0,-2.9,-0.08,-2.9]+[-0.5]*7)
-        high = np.array([-1]*3+[2.9,1.8,2.9,0.08,2.9,3.0,2.9]+[-0.5]*7)
-        self.observation_space = spaces.Box(low=low,high=high,dtype=np.float32)
-        
         
     def get_ik(self, position, orientation=None):
         if orientation is None:

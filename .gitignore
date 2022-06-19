@@ -2,3 +2,5 @@ Data
 Prediction_Results
 revise
 SingleControlResults
+*.pyc
+*.mat
